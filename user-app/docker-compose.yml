@@ -1,0 +1,40 @@
+version: '3.10'
+services:
+  user-app:
+    build:
+      args:
+        user: lucas
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    container_name: user-app
+    depends_on:
+      - user-app-db
+    image: vexpenses-test-user-app
+    networks:
+      - user-app-net
+    ports:
+      - '8001:80'
+    restart: unless-stopped
+    volumes:
+      - ./:/var/www/html/
+
+  user-app-db:
+    image: mysql
+    container_name: user-app-db
+    networks:
+      - user-app-net
+    ports:
+      - '33061:3306'
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+
+networks:
+  user-app-net:
+    driver: bridge
