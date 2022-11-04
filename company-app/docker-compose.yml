@@ -2,22 +2,21 @@ version: '3.10'
 services:
   company-app:
     build:
-      args:
-        user: lucas
-        uid: 1000
       context: ./
       dockerfile: Dockerfile
+    command: php artisan serve --host=0.0.0.0
     container_name: company-app
     depends_on:
       - company-app-db
-    image: vexpenses-test-company-app
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    image: company-app
     networks:
       - company-app-net
     ports:
-      - '8003:80'
-    restart: unless-stopped
+      - '8003:8000'
     volumes:
-      - ./:/var/www/html/
+      - ./:/app
 
   company-app-db:
     image: mysql
@@ -26,7 +25,6 @@ services:
       - company-app-net
     ports:
       - '33063:3306'
-    restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
