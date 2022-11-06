@@ -26,4 +26,9 @@ Route::get('/employees',
 )->name('employees.index')
 ->middleware('auth');
 
+Route::post('/employees/upload',
+    [EmployeeController::class, 'upload']
+)->name('employees.upload')
+->middleware('auth');
+
 Auth::routes();

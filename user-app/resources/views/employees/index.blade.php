@@ -4,8 +4,26 @@
     <div class="container px-4">
         <div class="row justify-content-around">
             <x-card class="col-12">
+                <x-flash-message />
+                
                 <h1>Employees</h1>
+                
+                <form method="POST" action="{{route('employees.upload')}}" enctype="multipart/form-data"
+                    class="needs-validation">
+                    @csrf
 
+                    <div class="mb-3 input-group">
+                        <input type="file" name="employees_file" id="employeesFile"
+                            class="form-control @error('employees_file') is-invalid @enderror" 
+                            aria-describedby="btnEmployeesFileUpload" aria-label="Upload">
+                        <button class="btn btn-primary" id="btnEmployeesFileUpload" type="submit">Upload</button>
+
+                        @error('employees_file')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </form>
+                
                 <div>
                     <table class="table table-striped table-hover table-responsive align-middle">
                         <thead>

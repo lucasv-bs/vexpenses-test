@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\EmployeeFileUploaded;
+use App\Models\EmployeeFile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rules\File;
+use Symfony\Component\HttpFoundation\Response;
 
 class EmployeeController extends Controller
 {
@@ -29,6 +34,31 @@ class EmployeeController extends Controller
         return view('employees.index', [
             'employees' => $content['data'],
             'pages' => $employeesPages
+        ]);
+    }
+
+    public function upload(Request $request)
+    {
+        $request->validate([
+            'employees_file' => [
+                'required',
+                File::types('csv')
+                ->max(2 * 2014)
+            ]
+        ]);
+
+        $uploadedFile['original_filename'] = $request->file('employees_file')->getClientOriginalName();
+        $uploadedFile['employees_file'] = $request->file('employees_file')->store('employees', 's3');
+
+        Storage::setVisibility($uploadedFile['employees_file'], 'public');
+
+        $employee = EmployeeFile::create($uploadedFile);
+
+        EmployeeFileUploaded::dispatch($employee->toArray());
+
+        return back(Response::HTTP_CREATED)->with([
+            'message' => 'Your file has been successfully uploaded. Wait a moment and refresh the page to see the updated data.',
+            'status' => 'success'
         ]);
     }
 
