@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\EmployeeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,11 @@ Route::get('/employees',
 Route::post('/employees/upload',
     [EmployeeController::class, 'upload']
 )->name('employees.upload')
+->middleware('auth');
+
+Route::get('/companies', 
+    [CompanyController::class, 'index']
+)->name('companies.index')
 ->middleware('auth');
 
 Auth::routes();

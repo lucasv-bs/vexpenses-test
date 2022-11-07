@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+Use Cache;
+
 use App\Jobs\EmployeeFileUploaded;
 use App\Models\EmployeeFile;
 use Illuminate\Http\Request;
@@ -13,26 +15,33 @@ class EmployeeController extends Controller
 {
     public function index(Request $request)
     {
+        $expiration = 60; // minutes
+        $key = 'employees_' . ($request->query('page') ? $request->query('page') : '');
+
         $employeesEndpoint = 'http://host.docker.internal:8002/api/employees';
         $employeesEndpoint .= $request->query('page')
             ? '?page='.$request->query('page')
             : '';
-
-        $response = \Http::withHeaders([
-            'Content-Type' => 'application/json',
-            'Accept' => 'application/json'
-        ])->get($employeesEndpoint);
         
-        $content = $response->json();
+        $response = Cache::remember($key, $expiration, function() use($employeesEndpoint) {
+            return \Http::withHeaders([
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json'
+            ])->get($employeesEndpoint)->json();
+        });
+
+        $content = $response;
 
         $employeesPages = $this->generatePagesUrl(
             $request->url(),
             $content['current_page'],
             $content['last_page']
         );
+
+        $employees = $this->getEmployeesCompany($request, $content['data']);
         
         return view('employees.index', [
-            'employees' => $content['data'],
+            'employees' => $employees,
             'pages' => $employeesPages
         ]);
     }
@@ -90,5 +99,18 @@ class EmployeeController extends Controller
         $pages[] = $nextPage;
 
         return $pages;
+    }
+
+    private function getEmployeesCompany(Request $request, $employeesData)
+    {
+        foreach($employeesData as $index => $employee) {
+            $company = (new CompanyController)->show($request, $employee['company_id']);
+            
+            $employee['company_name'] = $company[0]['corporate_name'];
+
+            $employeesData[$index] = $employee;
+        }
+
+        return $employeesData;
     }
 }

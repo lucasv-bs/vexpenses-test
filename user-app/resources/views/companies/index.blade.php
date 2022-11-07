@@ -4,44 +4,23 @@
     <div class="container px-4">
         <div class="row justify-content-around">
             <x-card class="col-12">
-                <x-flash-message />
                 
-                <h1>Employees</h1>
-                
-                <form method="POST" action="{{route('employees.upload')}}" enctype="multipart/form-data"
-                    class="needs-validation">
-                    @csrf
-
-                    <div class="mb-3 input-group">
-                        <input type="file" name="employees_file" id="employeesFile"
-                            class="form-control @error('employees_file') is-invalid @enderror" 
-                            aria-describedby="btnEmployeesFileUpload" aria-label="Upload">
-                        <button class="btn btn-primary" id="btnEmployeesFileUpload" type="submit">Upload</button>
-
-                        @error('employees_file')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                </form>
+                <h1>Companies</h1>
                 
                 <div>
                     <table class="table table-striped table-hover table-responsive align-middle">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Birth Date</th>
-                                <th>Registration Number</th>
-                                <th>Company</th>
+                                <th>Company Name</th>
+                                <th>CNPJ</th>
                                 <th class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($employees as $employee)
+                            @foreach ($companies as $company)
                                 <tr>
-                                    <td>{{ $employee['name'] }}</td>
-                                    <td>{{ $employee['birth_date'] }}</td>
-                                    <td>{{ $employee['registration_number'] }}</td>
-                                    <td>{{ $employee['company_name'] }}</td>
+                                    <td>{{ $company['corporate_name'] }}</td>
+                                    <td>{{ $company['cnpj'] }}</td>
                                     <td class="text-center">
                                         <a href="" class="btn btn-success">Edit</a>
                                     </td>

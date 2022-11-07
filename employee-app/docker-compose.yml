@@ -33,6 +33,15 @@ services:
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
 
+  employee-app-cache:
+    image: redis
+    container_name: employee-app-cache
+    networks:
+      - employee-app-net
+    ports:
+      - '63792:6379'
+    restart: unless-stopped
+
 networks:
   employee-app-net:
     driver: bridge

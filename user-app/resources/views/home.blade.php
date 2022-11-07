@@ -4,12 +4,14 @@
 <div class="container px-4">
     <div class="row justify-content-around">
         <x-card class="col-sm-12 col-md-4">
-            <p class="h1">
-                Employees
-            </p>
+            <a href="{{route('employees.index')}}" class="text-body">
+                <p class="h1">Employees</p>
+            </a>
         </x-card>
         <x-card class="col-sm-12 col-md-4">
-            <p class="h1">Companies</p>
+            <a href="{{route('companies.index')}}" class="text-body">
+                <p class="h1">Companies</p>
+            </a>
         </x-card>
     </div>
 </div>
