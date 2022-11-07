@@ -37,9 +37,14 @@ See more details about each service by accessing its corresponding directory.
         - `docker exec -it 'container-name' /bin/bash`
     - Then run database migrations
         - `php artisan migrate`
-5. Build assets of the user-app service. In the user-app service container, run the following command
+5. Execute the queue of the employee-app
+    - Access employee-app container with the command
+        - `docker exec -it 'employee-app' /bin/bash`
+    - Then run database migrations
+        - `php artisan queue:work`
+6. Build assets of the user-app service. In the user-app service container, run the following command
     - `npm install`
-6. Access the user-app interface via `http://localhost:port`. The port is the same as defined in the docker-compose.yml file
+7. Access the user-app interface via `http://localhost:port`. The port is the same as defined in the docker-compose.yml file
 
 ## Technologies
 
