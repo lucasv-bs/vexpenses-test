@@ -77,7 +77,7 @@ class CompanyControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
             "corporate_name" => $company->corporate_name,
-            "cnpj" => $company->cnpj
+            "cnpj" => (string)$company->cnpj
         ]);
     }
 
